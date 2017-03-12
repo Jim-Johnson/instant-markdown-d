@@ -8,6 +8,10 @@ var server = require('http').createServer(httpHandler),
     os = require('os'),
     send = require('send');
 
+var url = require('url');
+var fs = require('fs');
+var path = require('path');
+
 // WARNING: By setting this environment variable, anyone on your network may
 // run arbitrary code in your browser and read arbitrary files in the working
 // directory of the open file!
@@ -41,7 +45,10 @@ function writeMarkdown(body) {
   io.sockets.emit('newContent', lastWrittenMarkdown);
 }
 
+var directory;
+
 function readAllInput(input, callback) {
+  directory = input.headers && input.headers.directory;
   var body = '';
   input.on('data', function(data) {
     body += data;
@@ -82,6 +89,21 @@ function addSecurityHeaders(req, res, isIndexFile) {
     // Never cache the index file, to make sure that changes to the CSP are
     // picked up across soft reloads.
     res.setHeader('Cache-Control', 'no-store');
+  }
+}
+
+function imageRegex() { 
+  return /(.)(png|jpg|jpeg|gif)/g;
+}
+
+function isImage(requestPath) {
+  return imageRegex().test(requestPath);
+}
+
+function imageTypeFromPath(requestPath) {
+  var imageType = imageRegex().exec(requestPath);
+  if(imageType) {
+    return imageType[2];
   }
 }
 

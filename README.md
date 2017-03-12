@@ -1,4 +1,4 @@
-!nstant-markdown-d
+instant-markdown-d
 ================
 instant-markdown-d is a small Node.js server that enables instant compilation and previewing of Markup files. A plugin can easily be written for any text editor to interface with it. One currently exists for VIm: https://github.com/suan/vim-instant-markdown
 
